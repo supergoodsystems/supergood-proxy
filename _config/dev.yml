@@ -1,6 +1,4 @@
 remoteWorkerConfig:
-  adminClientId: "c6737a9a3f82c78332e8febcac66fec8"
-  adminClientSecret: "5bbf26f108a5ab70870d01e6d18fc6d7d403edddb5c9c9b2232b1a92a85d949a"
   baseURL: "http://localhost:3001"
   fetchInterval: "60s"
 proxyConfig:
