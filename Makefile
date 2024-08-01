@@ -14,3 +14,4 @@ run-local:
 	@go run \
 	  ./cmd/ \
 	  --path ./_config/dev.yml \
+	  
