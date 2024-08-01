@@ -1,6 +1,6 @@
 package cache
 
-func New() Cache{
+func New() Cache {
 	return Cache{
 		cache: map[string]*CacheVal{},
 	}
@@ -12,7 +12,6 @@ func (c *Cache) Get(key string) *CacheVal {
 	val := c.cache[key]
 	return val
 }
-
 
 func (c *Cache) Set(key string, val *CacheVal) {
 	c.mutex.Lock()

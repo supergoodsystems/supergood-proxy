@@ -23,7 +23,7 @@ func main() {
 
 	rcw := remoteconfigworker.New(cfg.RemoteWorkerConfig, &projectCache)
 	rp := proxy.New(proxy.ProxyOpts{
-		Port: cfg.ProxyConfig.Port,
+		Port:    cfg.ProxyConfig.Port,
 		Handler: proxy.NewProxyHandler(&projectCache),
 	})
 

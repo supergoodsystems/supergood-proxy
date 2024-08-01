@@ -26,7 +26,7 @@ func NewProxyHandler(projectCache *cache.Cache) *ProxyHandler {
 	}
 }
 
-// ServeHTTP is the proxy handler which will stuff credentials into the 
+// ServeHTTP is the proxy handler which will stuff credentials into the
 // proxied request based off clientID, clientSecret, fqdn stored in request headers
 func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	upstream := r.Header.Get(SupergoodUpstreamHeader)

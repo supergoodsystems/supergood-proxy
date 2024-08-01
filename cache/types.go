@@ -3,14 +3,14 @@ package cache
 import "sync"
 
 type Cache struct {
-	cache  map[string]*CacheVal
-	mutex             *sync.RWMutex
+	cache map[string]*CacheVal
+	mutex *sync.RWMutex
 }
 
 type CacheVal struct {
-	ClientID string
+	ClientID     string
 	ClientSecret string
-	Vendors map[string]VendorConfig
+	Vendors      map[string]VendorConfig
 }
 
 type VendorConfig struct {
@@ -18,6 +18,6 @@ type VendorConfig struct {
 }
 
 type Credential struct {
-	Key string
+	Key   string
 	Value string
 }

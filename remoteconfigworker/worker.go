@@ -66,10 +66,10 @@ func (rc *RemoteConfigWorker) fetchAndSetConfig() error {
 // on the remoteconfigworker package. There's probably a better way, most likely moving these
 // struct definitions to a shared package - but not sure thats good go.
 func responseToCacheVal(config TenantConfig) cache.CacheVal {
-	cacheVal := cache.CacheVal {
-		ClientID: config.ClientID,
+	cacheVal := cache.CacheVal{
+		ClientID:     config.ClientID,
 		ClientSecret: config.ClientSecret,
-		Vendors: map[string]cache.VendorConfig{}, 
+		Vendors:      map[string]cache.VendorConfig{},
 	}
 
 	for domain, config := range config.Vendors {

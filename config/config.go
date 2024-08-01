@@ -11,7 +11,7 @@ import (
 
 type Config struct {
 	RemoteWorkerConfig remoteconfigworker.RemoteConfigOpts
-	ProxyConfig proxy.ProxyOpts
+	ProxyConfig        proxy.ProxyOpts
 }
 
 func GetConfigFromEnvironment() Config {
@@ -32,7 +32,7 @@ func GetConfigFromEnvironment() Config {
 	fetchInterval := 1 * time.Second
 
 	proxyPort := os.Getenv("PROXY_HTTP_PORT")
-	if proxyPort == ""{
+	if proxyPort == "" {
 		proxyPort = "8080"
 	}
 
