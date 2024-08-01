@@ -24,8 +24,6 @@ func GetConfig(path string) (Config, error) {
 	}
 
 	resolveConfigWithPath(path, &cfg)
-	fmt.Println("HERE")
-	fmt.Printf("+%v", cfg)
 	err = resolveConfigWithEnv(&cfg)
 	return cfg, err
 }
@@ -39,10 +37,10 @@ func resolvePathFromEnv() (string, error) {
 		return "_config/dev.yml", nil
 	}
 	if env == "staging" {
-		return "_config/staging.yml", nil
+		return "/var/_config/staging.yml", nil
 	}
 	if env == "production" {
-		return "_config/production.yml", nil
+		return "/var/_config/production.yml", nil
 	}
 	return "", fmt.Errorf("cannot resolve path from environment. Invalid ENV var")
 }
