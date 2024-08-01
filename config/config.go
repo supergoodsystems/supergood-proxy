@@ -1,7 +1,7 @@
 package config
 
 import (
-	"log"
+	"fmt"
 	"os"
 	"time"
 
@@ -10,42 +10,49 @@ import (
 )
 
 type Config struct {
-	RemoteWorkerConfig remoteconfigworker.RemoteConfigOpts
-	ProxyConfig        proxy.ProxyOpts
+	RemoteWorkerConfig remoteconfigworker.RemoteConfigOpts `yaml:"remoteworkerConfig"`
+	ProxyConfig        proxy.ProxyOpts `yaml:"proxyConfig"`
 }
 
-func GetConfigFromEnvironment() Config {
-	baseURL := os.Getenv("SUPERGOOD_BASE_URL")
-	if baseURL == "" {
-		baseURL = "http://localhost:3001"
-	}
-	adminClientId := os.Getenv("ADMIN_CLIENT_ID")
-	if adminClientId == "" {
-		log.Fatal("ADMIN_CLIENT_ID missing from env vars")
-	}
+func GetConfig(path string) Config {
+	cfg := Config{}
+	resolveConfigWithPath(path, &cfg)
+	resolveConfigWithEnv(&cfg)
+	return cfg
+}
 
-	adminClientSecret := os.Getenv("ADMIN_CLIENT_SECRET")
-	if adminClientSecret == "" {
-		log.Fatal("ADMIN_CLIENT_SECRET missing from env vars")
-	}
-
-	fetchInterval := 1 * time.Second
-
-	proxyPort := os.Getenv("PROXY_HTTP_PORT")
-	if proxyPort == "" {
-		proxyPort = "8080"
+func resolveConfigWithEnv(config *Config) error {
+	if (config.RemoteWorkerConfig.BaseURL == "") {
+		config.RemoteWorkerConfig.BaseURL = os.Getenv("SUPERGOOD_BASE_URL")
+		if config.RemoteWorkerConfig.BaseURL == "" {
+			config.RemoteWorkerConfig.BaseURL = "http://localhost:3001"
+		}
 	}
 
-	return Config{
-		RemoteWorkerConfig: remoteconfigworker.RemoteConfigOpts{
-			BaseURL:           baseURL,
-			AdminClientID:     adminClientId,
-			AdminClientSecret: adminClientSecret,
-			FetchInterval:     fetchInterval,
-		},
-		ProxyConfig: proxy.ProxyOpts{
-			Port: proxyPort,
-		},
+	if (config.RemoteWorkerConfig.AdminClientID == "") {
+		config.RemoteWorkerConfig.AdminClientID = os.Getenv("ADMIN_CLIENT_ID")
+		if config.RemoteWorkerConfig.AdminClientID == "" {
+			return fmt.Errorf("ADMIN_CLIENT_ID missing from env vars")
+		}
 	}
 
+	if (config.RemoteWorkerConfig.AdminClientSecret == "") {
+		config.RemoteWorkerConfig.AdminClientSecret = os.Getenv("ADMIN_CLIENT_SECRET")
+		if config.RemoteWorkerConfig.AdminClientSecret == "" {
+			return fmt.Errorf("ADMIN_CLIENT_SECRET missing from env vars")
+		}
+	}
+
+	if (config.RemoteWorkerConfig.FetchInterval == 0) {
+		config.RemoteWorkerConfig.FetchInterval = 1 * time.Second
+	}
+
+	if (config.ProxyConfig.Port == "") {
+		config.ProxyConfig.Port = os.Getenv("PROXY_HTTP_PORT")
+		if config.ProxyConfig.Port  == "" {
+			config.ProxyConfig.Port  = "8080"
+		}
+	}
+
+	return nil
 }

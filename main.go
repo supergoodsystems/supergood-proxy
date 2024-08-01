@@ -18,7 +18,7 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
-	cfg := config.GetConfigFromEnvironment()
+	cfg := config.GetConfig("")
 	projectCache := cache.New()
 
 	rcw := remoteconfigworker.New(cfg.RemoteWorkerConfig, &projectCache)
