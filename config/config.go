@@ -14,11 +14,35 @@ type Config struct {
 	ProxyConfig        proxy.ProxyOpts `yaml:"proxyConfig"`
 }
 
-func GetConfig(path string) Config {
+func GetConfig(path string) (Config, error) {
 	cfg := Config{}
+	var err error
+	if (path == ""){
+		if path, err = resolvePathFromEnv(); err != nil{
+			return cfg, err
+		}
+	}
+
 	resolveConfigWithPath(path, &cfg)
-	resolveConfigWithEnv(&cfg)
-	return cfg
+	err = resolveConfigWithEnv(&cfg)
+	return cfg, err
+}
+
+func resolvePathFromEnv() (string, error) {
+	env := os.Getenv("ENV")
+	if env == "" {
+		return "", fmt.Errorf("cannot have env path undefined as well as ENV var undefined")
+	}
+	if (env == "development"){
+		return "_config/dev.yml", nil
+	}
+	if (env == "staging") {
+		return "_config/staging.yml", nil
+	}
+	if (env == "production") {
+		return "_config/production.yml", nil
+	}
+	return "", fmt.Errorf("cannot resolve path from environment. Invalid ENV var")
 }
 
 func resolveConfigWithEnv(config *Config) error {

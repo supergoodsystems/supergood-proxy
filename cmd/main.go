@@ -34,7 +34,10 @@ func run() error {
 			ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 			defer cancel()
 
-			cfg := config.GetConfig(path)
+			cfg, err := config.GetConfig(path)
+			if err != nil {
+				log.Fatalf("%v", err)
+			}
 			projectCache := cache.New()
 
 			rcw := remoteconfigworker.New(cfg.RemoteWorkerConfig, &projectCache)
@@ -43,7 +46,7 @@ func run() error {
 				Handler: proxy.NewProxyHandler(&projectCache),
 			})
 
-			err := rcw.Start(ctx)
+			err = rcw.Start(ctx)
 			if err != nil {
 				log.Fatalf("Failed to start remote config worker with error: %v", err)
 			}
@@ -64,7 +67,7 @@ func run() error {
 
 	cmd.PersistentFlags().StringVar(
 		&path,
-		"file",
+		"path",
 		path,
 		"Path to a file where '.yml' configuration is stored",
 	)

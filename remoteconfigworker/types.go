@@ -7,10 +7,10 @@ import (
 )
 
 type RemoteConfigOpts struct {
-	AdminClientID     string
-	AdminClientSecret string
-	BaseURL           string
-	FetchInterval     time.Duration
+	AdminClientID     string `yaml:"adminClientId"`
+	AdminClientSecret string `yaml:"adminClientSecret"`
+	BaseURL           string `yaml:"baseURL"`
+	FetchInterval     time.Duration `yaml:"fetchInterval"`
 }
 
 type Credential struct {

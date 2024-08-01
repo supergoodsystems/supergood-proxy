@@ -18,7 +18,10 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
-	cfg := config.GetConfig("")
+	cfg, err := config.GetConfig("")
+	if err != nil {
+		log.Fatal("+%v", err)
+	}
 	projectCache := cache.New()
 
 	rcw := remoteconfigworker.New(cfg.RemoteWorkerConfig, &projectCache)
@@ -27,7 +30,7 @@ func main() {
 		Handler: proxy.NewProxyHandler(&projectCache),
 	})
 
-	err := rcw.Start(ctx)
+	err = rcw.Start(ctx)
 	if err != nil {
 		log.Fatalf("Failed to start remote config worker with error: %v", err)
 	}
