@@ -39,7 +39,6 @@ func (rc *RemoteConfigWorker) Refresh(ctx context.Context) {
 			return
 		case <-time.After(rc.fetchInterval):
 			if err := rc.fetchAndSetConfig(); err != nil {
-				// TODO: handle error logging
 				log.Println("Failed to fetch config")
 			}
 		}
@@ -61,6 +60,11 @@ func (rc *RemoteConfigWorker) fetchAndSetConfig() error {
 	return nil
 }
 
+// responseToCacheVal marshals the TenantConfig response object into a cache value.
+// I'd like to not to have to convert TenantConfig into cache.CacheVal, but remoteconfigworker
+// and cache are separate packages and I dont want the cache package to have a dependency
+// on the remoteconfigworker package. There's probably a better way, most likely moving these
+// struct definitions to a shared package - but not sure thats good go.
 func responseToCacheVal(config TenantConfig) cache.CacheVal {
 	cacheVal := cache.CacheVal {
 		ClientID: config.ClientID,
@@ -68,11 +72,14 @@ func responseToCacheVal(config TenantConfig) cache.CacheVal {
 		Vendors: map[string]cache.VendorConfig{}, 
 	}
 
-	// FIX
-	// for k, v := range config.Vendors {
-	// 	cacheVal.Vendors[k] = cache.VendorConfig{
-	// 		Credentials: []cache.Credential{},
-	// 	}
-	// }
+	for domain, config := range config.Vendors {
+		cacheCreds := []cache.Credential{}
+		for _, cred := range config.Credentials {
+			cacheCreds = append(cacheCreds, cache.Credential{Key: cred.Key, Value: cred.Value})
+		}
+		cacheVal.Vendors[domain] = cache.VendorConfig{
+			Credentials: cacheCreds,
+		}
+	}
 	return cacheVal
 }

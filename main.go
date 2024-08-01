@@ -18,11 +18,12 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
-	proxyConfig := config.GetConfigFromEnvironment()
+	cfg := config.GetConfigFromEnvironment()
 	projectCache := cache.New()
 
-	rcw := remoteconfigworker.New(proxyConfig.RemoteWorkerConfig, &projectCache)
+	rcw := remoteconfigworker.New(cfg.RemoteWorkerConfig, &projectCache)
 	rp := proxy.New(proxy.ProxyOpts{
+		Port: cfg.ProxyConfig.Port,
 		Handler: proxy.NewProxyHandler(&projectCache),
 	})
 

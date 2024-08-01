@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -13,13 +14,14 @@ type Proxy struct {
 
 // ProxyOpts are options to pass to the Proxy constructor New()
 type ProxyOpts struct {
+	Port string
 	Handler *ProxyHandler
 }
 
 // New returns a new Reverse Proxy with handler as input
 func New(opts ProxyOpts) Proxy {
 	server := &http.Server{
-		Addr:    ":8080", // Should have this live as env var
+		Addr:    fmt.Sprintf(":%s", opts.Port),
 		Handler: http.HandlerFunc(opts.Handler.ServeHTTP),
 	}
 
