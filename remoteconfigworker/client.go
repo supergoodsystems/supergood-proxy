@@ -28,7 +28,7 @@ func (rc *RemoteConfigWorker) fetch() ([]TenantConfig, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == 401 {
-		return nil, fmt.Errorf("supergood: invalid ClientID or ClientSecret")
+		return nil, fmt.Errorf("supergood: invalid ADMIN_CLIENT_KEY")
 	} else if resp.StatusCode < 200 || resp.StatusCode > 299 {
 		body, _ := io.ReadAll(resp.Body)
 		message := string(body)

@@ -71,9 +71,9 @@ func responseToCacheVal(config TenantConfig) cache.CacheVal {
 		Vendors:      map[string]cache.VendorConfig{},
 	}
 
-	for domain, config := range config.Vendors {
+	for domain, credentials := range config.Vendors {
 		cacheCreds := []cache.Credential{}
-		for _, cred := range config.Credentials {
+		for _, cred := range credentials {
 			cacheCreds = append(cacheCreds, cache.Credential{Key: cred.Key, Value: cred.Value})
 		}
 		cacheVal.Vendors[domain] = cache.VendorConfig{

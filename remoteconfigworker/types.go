@@ -17,14 +17,10 @@ type Credential struct {
 	Value string `json:"value"`
 }
 
-type VendorConfig struct {
-	Credentials []Credential
-}
-
 type TenantConfig struct {
 	ClientID     string                  `json:"clientID"`
 	ClientSecret string                  `json:"clientSecret"`
-	Vendors      map[string]VendorConfig `json:"vendors"` // map of domain to vendor config
+	Vendors      map[string][]Credential `json:"vendorConfig"` // map of domain to vendor config
 }
 
 type RemoteConfigWorker struct {
