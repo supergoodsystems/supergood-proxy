@@ -53,17 +53,10 @@ func resolveConfigWithEnv(config *Config) error {
 		}
 	}
 
-	if config.RemoteWorkerConfig.AdminClientID == "" {
-		config.RemoteWorkerConfig.AdminClientID = os.Getenv("ADMIN_CLIENT_ID")
-		if config.RemoteWorkerConfig.AdminClientID == "" {
-			return fmt.Errorf("ADMIN_CLIENT_ID missing from env vars")
-		}
-	}
-
-	if config.RemoteWorkerConfig.AdminClientSecret == "" {
-		config.RemoteWorkerConfig.AdminClientSecret = os.Getenv("ADMIN_CLIENT_SECRET")
-		if config.RemoteWorkerConfig.AdminClientSecret == "" {
-			return fmt.Errorf("ADMIN_CLIENT_SECRET missing from env vars")
+	if config.RemoteWorkerConfig.AdminClientKey == "" {
+		config.RemoteWorkerConfig.AdminClientKey = os.Getenv("ADMIN_CLIENT_KEY")
+		if config.RemoteWorkerConfig.AdminClientKey == "" {
+			return fmt.Errorf("ADMIN_CLIENT_KEY missing from env vars")
 		}
 	}
 

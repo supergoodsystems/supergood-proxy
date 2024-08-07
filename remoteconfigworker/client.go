@@ -1,7 +1,6 @@
 package remoteconfigworker
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -20,7 +19,7 @@ func (rc *RemoteConfigWorker) fetch() ([]TenantConfig, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(rc.adminClientId+":"+rc.adminClientSecret)))
+	req.Header.Set("sg-admin-api-key", rc.adminClientKey)
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {

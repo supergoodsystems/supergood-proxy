@@ -11,11 +11,10 @@ import (
 // New creates a new remote config worker
 func New(opts RemoteConfigOpts, tenantCache *cache.Cache) RemoteConfigWorker {
 	return RemoteConfigWorker{
-		baseURL:           opts.BaseURL,
-		adminClientId:     opts.AdminClientID,
-		adminClientSecret: opts.AdminClientSecret,
-		cache:             tenantCache,
-		fetchInterval:     opts.FetchInterval,
+		baseURL:        opts.BaseURL,
+		adminClientKey: opts.AdminClientKey,
+		cache:          tenantCache,
+		fetchInterval:  opts.FetchInterval,
 	}
 }
 

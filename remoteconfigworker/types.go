@@ -7,10 +7,9 @@ import (
 )
 
 type RemoteConfigOpts struct {
-	AdminClientID     string        `yaml:"adminClientId"`
-	AdminClientSecret string        `yaml:"adminClientSecret"`
-	BaseURL           string        `yaml:"baseURL"`
-	FetchInterval     time.Duration `yaml:"fetchInterval"`
+	AdminClientKey string        `yaml:"adminClientKey"`
+	BaseURL        string        `yaml:"baseURL"`
+	FetchInterval  time.Duration `yaml:"fetchInterval"`
 }
 
 type Credential struct {
@@ -19,7 +18,7 @@ type Credential struct {
 }
 
 type VendorConfig struct {
-	Credentials []Credential `json:"credentials"`
+	Credentials []Credential
 }
 
 type TenantConfig struct {
@@ -29,9 +28,8 @@ type TenantConfig struct {
 }
 
 type RemoteConfigWorker struct {
-	adminClientId     string
-	adminClientSecret string
-	baseURL           string
-	cache             *cache.Cache
-	fetchInterval     time.Duration
+	adminClientKey string
+	baseURL        string
+	cache          *cache.Cache
+	fetchInterval  time.Duration
 }

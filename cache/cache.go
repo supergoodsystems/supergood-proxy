@@ -1,8 +1,11 @@
 package cache
 
+import "sync"
+
 func New() Cache {
 	return Cache{
 		cache: map[string]*CacheVal{},
+		mutex: new(sync.RWMutex),
 	}
 }
 
