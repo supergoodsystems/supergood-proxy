@@ -1,0 +1,5 @@
+remoteWorkerConfig:
+  baseURL: "http://localhost:3001"
+  fetchInterval: "60s"
+proxyConfig:
+  port: "8080"

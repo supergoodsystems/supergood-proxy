@@ -1,0 +1,82 @@
+name: Build, Push, Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deployment Environment"
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment == 'production' && 'production' || 'staging' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: Dockerfile
+            serviceName: ${{ github.event.inputs.environment == 'production' && 'proxy-production' || 'proxy-staging' }}
+            image: ${{ github.event.inputs.environment == 'production' && 'us-west1-docker.pkg.dev/supergood-373204/proxy/proxy:latest' || 'us-west1-docker.pkg.dev/supergood-staging-410621/proxy/proxy:latest' }}
+
+    steps:
+      - name: Checkout
+        uses: "actions/checkout@v3"
+
+      - name: Auth
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: ${{ github.event.inputs.environment == 'production' && secrets.GCP_PRODUCTION_GITHUB_ACTIONS_SERVICE_ACCOUNT_KEY_JSON  || secrets.GCP_STAGING_GITHUB_ACTIONS_SERVICE_ACCOUNT_KEY_JSON }}
+
+      - name: Set up Cloud SDK
+        uses: "google-github-actions/setup-gcloud@v1"
+
+      - name: Use gcloud CLI
+        run: gcloud info
+
+      - name: Docker auth
+        run: |-
+          gcloud auth configure-docker us-west1-docker.pkg.dev --quiet
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          file: ${{ matrix.dockerfile }}
+          context: .
+          push: true
+          tags: ${{ matrix.image }}
+
+      - name: Post Deployment Start to Slack
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          channel-id: "C04TB9BTHJA"
+          slack-message: "Deploying: ${{ matrix.serviceName }} to ${{ github.event.inputs.environment == 'production' && 'production' || 'staging'}}"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_TOKEN }}
+
+      - name: Post Deployment Failure to Slack
+        if: ${{ failure() }}
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          channel-id: "C04TB9BTHJA"
+          slack-message: "Failed to deploy ${{ matrix.serviceName }} to ${{ github.event.inputs.environment == 'production' && 'production' || 'staging'}}"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_TOKEN }}
+
+      - name: Post Deployment Success to Slack
+        if: ${{ success() }}
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          channel-id: "C04TB9BTHJA"
+          slack-message: "Successfully deployed ${{ matrix.serviceName }} to ${{ github.event.inputs.environment == 'production' && 'production' || 'staging'}}"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_TOKEN }}

@@ -1,0 +1,5 @@
+remoteWorkerConfig:
+  baseURL: "https://api-staging.supergood.ai"
+  fetchInterval: "60s"
+proxyConfig:
+  port: "8080"
