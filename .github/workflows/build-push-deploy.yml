@@ -63,6 +63,13 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_TOKEN }}
 
+      - name: Deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ matrix.serviceName }}
+          image: ${{ matrix.image }}
+          region: us-west1
+
       - name: Post Deployment Failure to Slack
         if: ${{ failure() }}
         uses: slackapi/slack-github-action@v1.25.0
