@@ -42,8 +42,10 @@ func run() error {
 
 			rcw := remoteconfigworker.New(cfg.RemoteWorkerConfig, &projectCache)
 			rp := proxy.New(proxy.ProxyOpts{
-				Port:    cfg.ProxyConfig.Port,
-				Handler: proxy.NewProxyHandler(&projectCache),
+				Port:               cfg.ProxyConfig.Port,
+				HealthCheckPort:    cfg.ProxyConfig.HealthCheckPort,
+				Handler:            proxy.NewProxyHandler(&projectCache),
+				HealthCheckHandler: proxy.NewHealthCheckHandler(),
 			})
 
 			err = rcw.Start(ctx)

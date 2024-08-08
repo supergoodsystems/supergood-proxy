@@ -3,3 +3,4 @@ remoteWorkerConfig:
   fetchInterval: "60s"
 proxyConfig:
   port: "8080"
+  healthCheckPort: "8081"
