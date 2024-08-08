@@ -12,6 +12,6 @@ RUN \
 FROM alpine:3.18.2 AS app
 COPY _config/ /var/_config/
 COPY --from=base /usr/local/bin/supergood-proxy /usr/local/bin/supergood-proxy
-COPY --from=datadog/serverless-init:1 /datadog-init /app/datadog-init
-ENTRYPOINT ["/app/datadog-init"]
-CMD ["/usr/local/bin/supergood-proxy"]
+# COPY --from=datadog/serverless-init:1 /datadog-init /app/datadog-init
+# ENTRYPOINT ["/app/datadog-init"]
+ENTRYPOINT ["/usr/local/bin/supergood-proxy"]
