@@ -71,5 +71,12 @@ func resolveConfigWithEnv(config *Config) error {
 		}
 	}
 
+	if config.ProxyConfig.HealthCheckPort == "" {
+		config.ProxyConfig.HealthCheckPort = os.Getenv("HEALTH_CHECK_HTTP_PORT")
+		if config.ProxyConfig.HealthCheckPort == "" {
+			config.ProxyConfig.HealthCheckPort = "8081"
+		}
+	}
+
 	return nil
 }
