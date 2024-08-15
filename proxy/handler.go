@@ -49,9 +49,6 @@ func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	director := func(req *http.Request) {
 		req.URL.Scheme = targetURL.Scheme
 		req.URL.Host = targetURL.Host
-		req.URL.Path = r.URL.Path
-		req.URL.RawQuery = r.URL.RawQuery
-		req.Header = r.Header
 		req.Host = targetURL.Host
 
 		req.Header.Del(SupergoodClientIDHeader)
@@ -62,6 +59,7 @@ func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		for _, cred := range vendorConfig.Credentials {
+			req.Header.Del(cred.Key)
 			req.Header.Add(cred.Key, cred.Value)
 		}
 	}
